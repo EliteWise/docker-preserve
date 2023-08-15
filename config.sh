@@ -3,6 +3,9 @@ BACKUP_FOLDER="./backups"
 VOLUME_PATH="./volumes"
 REMOTE_PATH="/home/ubuntu/backups"
 
+BACKUP_FILE="backup_$(date +"%Y%m%d%H%M%S").tar.gz"
+BACKUP_PATH="$BACKUP_FOLDER/$BACKUP_FILE"
+
 # Configurations pour la connexion distante
 REMOTE_USER="root"
 REMOTE_HOST="example.com"
