@@ -10,7 +10,7 @@ This script facilitates the creation of a compressed archive of your "volumes" d
 Firstly, ensure the script has execution permissions. Then, run it with the correct parameters:
 ```sh
 chmod +x script_name.sh
-./script_name.sh [REMOTE_USER] [REMOTE_HOST] [REMOTE_PATH]
+./docker-volumes-backup.sh [REMOTE_USER] [REMOTE_HOST] [REMOTE_PATH]
 ```
 
 Where:
@@ -21,7 +21,7 @@ Where:
 
 Example:
 ```sh
-./script_name.sh root myserver.com /home/ubuntu/backups
+./docker-volumes-backup.sh root 10.11.12.13 /home/ubuntu/backups
 ```
 
 #### Points to Note
