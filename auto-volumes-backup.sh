@@ -38,15 +38,6 @@ fi
 # Assurez-vous que la clé SSH a les bonnes permissions
 chmod 600 "$SSH_KEY_PATH"
 
-# Envoyer la sauvegarde au premier poste distant
-scp -i "$SSH_KEY_PATH" $BACKUP_PATH $REMOTE_USER@$REMOTE_HOST:$REMOTE_PATH
-if [[ $? -ne 0 ]]; then
-    echo "Erreur lors de l'envoi de la sauvegarde au serveur distant."
-    exit 1
-fi
-
-echo "Sauvegarde réussie et envoyée au serveur distant."
-
 SCRIPT_PATH="$(dirname "$(readlink -f "$0")")"
 
 if [ "$SETUP_CRON" = true ]; then
@@ -57,3 +48,12 @@ if [ "$SETUP_CRON" = true ]; then
         echo "Cron job déjà configuré pour ce script."
     fi
 fi
+
+# Envoyer la sauvegarde au premier poste distant
+scp -i "$SSH_KEY_PATH" $BACKUP_PATH $REMOTE_USER@$REMOTE_HOST:$REMOTE_PATH
+if [[ $? -ne 0 ]]; then
+    echo "Erreur lors de l'envoi de la sauvegarde au serveur distant."
+    exit 1
+fi
+
+echo "Sauvegarde réussie et envoyée au serveur distant."
