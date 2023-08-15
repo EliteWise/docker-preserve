@@ -19,6 +19,11 @@ else
         VOLUME_PATH="./volumes"
         BACKUP_FILE="backup_$(date +"%Y%m%d%H%M%S").tar.gz"
         BACKUP_PATH="$BACKUP_FOLDER/$BACKUP_FILE"
+
+        SSH_KEY_PATH="/root/.ssh/backup-ssh"
+
+        SETUP_CRON=false
+        CRON_SCHEDULE="0 2 * * *"
     fi
 fi
 
