@@ -9,3 +9,6 @@ REMOTE_HOST="example.com"
 
 # Configuration clé SSH (si nécessaire)
 SSH_KEY_PATH="/root/.ssh/backup-ssh"
+
+SETUP_CRON=false
+CRON_SCHEDULE="0 2 * * *"
