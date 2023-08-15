@@ -1,23 +1,28 @@
 #!/usr/bin/env bash
 
-# Inclure le fichier config
-source config.sh
+# Vérifier le premier argument
+if [[ $1 == "config" ]]; then
+    # Inclure le fichier config
+    source config.sh
+else
+    # Vérifier que l'utilisateur a fourni les arguments nécessaires
+    if [[ $# -lt 3 ]]; then
+        echo "Usage: $0 [config] OR $0 [REMOTE_USER] [REMOTE_HOST] [REMOTE_PATH]"
+        exit 1
+    else
+        # Configuration
+        REMOTE_USER="$1"
+        REMOTE_HOST="$2"
+        REMOTE_PATH="$3"
 
-# Vérifier que l'utilisateur a fourni les arguments nécessaires
-if [[ $# -lt 3 ]]; then
-    echo "Usage: $0 [REMOTE_USER] [REMOTE_HOST] [REMOTE_PATH]"
-    exit 1
+        BACKUP_FOLDER="./backups"
+        VOLUME_PATH="./volumes"
+        BACKUP_FILE="backup_$(date +"%Y%m%d%H%M%S").tar.gz"
+        BACKUP_PATH="$BACKUP_FOLDER/$BACKUP_FILE"
+    fi
 fi
 
-# Configuration
-BACKUP_FOLDER="./backups"
-VOLUME_PATH="./volumes"
-BACKUP_FILE="backup_$(date +"%Y%m%d%H%M%S").tar.gz"
-BACKUP_PATH="$BACKUP_FOLDER/$BACKUP_FILE"
 
-REMOTE_USER="$1"
-REMOTE_HOST="$2"
-REMOTE_PATH="$3"
 
 # Vérifiez si le dossier backups existe, sinon créez-le
 if [[ ! -d "./backups" ]]; then
