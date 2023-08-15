@@ -8,7 +8,6 @@ This script facilitates the creation of a compressed archive of your "volumes" d
 
 ### Usage
 Firstly, ensure the script has execution permissions. Then, run it with the correct parameters:
-
 ```sh
 chmod +x script_name.sh
 ./script_name.sh [REMOTE_USER] [REMOTE_HOST] [REMOTE_PATH]
@@ -16,12 +15,11 @@ chmod +x script_name.sh
 
 Where:
 
-[REMOTE_USER] is the username on the remote server.
-[REMOTE_HOST] is the address or hostname of the remote server.
-[REMOTE_PATH] is the directory path on the remote server where you wish to store the backup.
+- [REMOTE_USER] is the username on the remote server.
+- [REMOTE_HOST] is the address or hostname of the remote server.
+- [REMOTE_PATH] is the directory path on the remote server where you wish to store the backup.
 
 Example:
-
 ```sh
 ./script_name.sh root myserver.com /home/ubuntu/backups
 ```
