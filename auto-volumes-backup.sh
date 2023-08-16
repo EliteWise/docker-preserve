@@ -24,10 +24,18 @@ else
 
         SETUP_CRON=false
         CRON_SCHEDULE="0 2 * * *"
+
+        SAVE_BIND_MOUNTS=true
+        SAVE_NAMED_VOLUMES=false
+
+        for arg in "$@"; do
+          if [ "$arg" == '--named-volumes' ]; then
+              SAVE_NAMED_VOLUMES=true
+              break
+          fi
+        done
     fi
 fi
-
-
 
 # Vérifiez si le dossier backups existe, sinon créez-le
 if [[ ! -d "./backups" ]]; then
@@ -36,6 +44,20 @@ if [[ ! -d "./backups" ]]; then
         echo "Erreur lors de la création du dossier 'backups'."
         exit 1
     fi
+fi
+
+if [[ "$SAVE_NAMED_VOLUMES" = true ]]; then
+  if docker volume ls -q | grep -q "^${VOLUME_NAME}$"; then
+    #Créer une archive du volume
+    sudo tar -czvf "${BACKUP_PATH}" -C "/var/lib/docker/volumes/${VOLUME_NAME}/_data" .
+    if [[ $? -eq 0 ]]; then
+      echo "Archive créée avec succès dans ${BACKUP_PATH}"
+    else
+      echo "Erreur lors de la création de l'archive."
+    fi
+  else
+      echo "Le volume $VOLUME_NAME n'existe pas."
+  fi
 fi
 
 # Créer une archive du dossier "volumes"
