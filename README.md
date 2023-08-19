@@ -9,7 +9,7 @@ This script facilitates the creation of a compressed archive of your "volumes" d
 ### Usage
 Firstly, ensure the script has execution permissions. Then, run it with the correct parameters:
 ```sh
-chmod +x script_name.sh
+chmod +x docker-volumes-backup.sh
 ./docker-volumes-backup.sh [REMOTE_USER] [REMOTE_HOST] [REMOTE_PATH]
 ```
 
