@@ -1,5 +1,15 @@
 #!/usr/bin/env bash
 (
+
+dependencies=("tar" "scp" "ssh" "docker")
+# Vérifie l'existence des dependencies
+for cmd in "${dependencies[@]}"; do
+  if ! command -v $cmd &> /dev/null; then
+    echo "Erreur : $cmd n'est pas installé."
+    exit 1
+  fi
+done
+
 # Vérifier le premier argument
 if [[ $1 == "config" ]]; then
     # Inclure le fichier config
