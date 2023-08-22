@@ -1,0 +1,68 @@
+basePath: /api/v1
+info:
+  contact: {}
+paths:
+  /archive/{id}:
+    get:
+      description: Retrieve a specific archive
+      parameters:
+      - description: Identifier for the archive
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved archive
+          schema:
+            type: string
+        "404":
+          description: Archive not found
+          schema:
+            type: string
+      summary: Retrieve a specific archive
+      tags:
+      - Archives
+  /archives:
+    get:
+      description: Retrieve a list of all archives
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved list of archives
+          schema:
+            type: string
+        "404":
+          description: Archives not found
+          schema:
+            type: string
+      summary: Retrieve a list of all archives
+      tags:
+      - Archives
+  /deleteArchive/{id}:
+    delete:
+      description: Delete a specific archive
+      parameters:
+      - description: Identifier for the archive to be deleted
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully deleted archive
+          schema:
+            type: string
+        "404":
+          description: Archive not found
+          schema:
+            type: string
+      summary: Delete a specific archive
+      tags:
+      - Archives
+swagger: "2.0"

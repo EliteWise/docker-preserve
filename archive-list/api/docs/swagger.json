@@ -1,0 +1,105 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "basePath": "/api/v1",
+    "paths": {
+        "/archive/{id}": {
+            "get": {
+                "description": "Retrieve a specific archive",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Archives"
+                ],
+                "summary": "Retrieve a specific archive",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Identifier for the archive",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved archive",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Archive not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/archives": {
+            "get": {
+                "description": "Retrieve a list of all archives",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Archives"
+                ],
+                "summary": "Retrieve a list of all archives",
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved list of archives",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Archives not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/deleteArchive/{id}": {
+            "delete": {
+                "description": "Delete a specific archive",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Archives"
+                ],
+                "summary": "Delete a specific archive",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Identifier for the archive to be deleted",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully deleted archive",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Archive not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
