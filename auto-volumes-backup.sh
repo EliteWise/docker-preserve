@@ -2,7 +2,7 @@
 (
 
 dependencies=("tar" "scp" "ssh" "docker")
-# Vérifie l'existence des dependencies
+# Verify the existence of dependencies
 for cmd in "${dependencies[@]}"; do
   if ! command -v $cmd &> /dev/null; then
     echo "Erreur : $cmd n'est pas installé."
@@ -10,12 +10,12 @@ for cmd in "${dependencies[@]}"; do
   fi
 done
 
-# Vérifier le premier argument
+# Verify the first argument
 if [[ $1 == "config" ]]; then
-    # Inclure le fichier config
+    # Include config script
     source config.sh
 else
-    # Vérifier que l'utilisateur a fourni les arguments nécessaires
+    # Verify that the user passed enough arguments
     if [[ $# -lt 3 ]]; then
         echo "Usage: $0 [config] OR $0 [REMOTE_USER] [REMOTE_HOST] [REMOTE_PATH]"
         exit 1
@@ -49,7 +49,7 @@ else
     fi
 fi
 
-# Vérifie si le dossier backups existe, sinon le crée
+# Verify if the folder backups exist, else create it
 if [[ ! -d "./backups" ]]; then
     mkdir "./backups"
     if [[ $? -ne 0 ]]; then
@@ -60,7 +60,7 @@ fi
 
 if [[ "$SAVE_NAMED_VOLUMES" = true ]]; then
   if docker volume ls -q | grep -q "^${VOLUME_NAME}$"; then
-    # Crée une archive du volume
+    # Creation of an archive of the volume
     sudo tar -czvf "${BACKUP_PATH}" -C "/var/lib/docker/volumes/${VOLUME_NAME}/_data" .
     if [[ $? -eq 0 ]]; then
       echo "Archive créée avec succès dans ${BACKUP_PATH}"
@@ -72,14 +72,14 @@ if [[ "$SAVE_NAMED_VOLUMES" = true ]]; then
   fi
 fi
 
-# Crée une archive du dossier "volumes"
+# Creation of an archive of the folder "volumes"
 sudo tar czvf $BACKUP_PATH -C $VOLUME_PATH ./
 if [[ $? -ne 0 ]]; then
     echo "Erreur lors de la création de l'archive."
     exit 1
 fi
 
-# Vérifie que la clé SSH a les bonnes permissions
+# Verify if the SSH key as the right permissions
 chmod 600 "$SSH_KEY_PATH"
 
 SCRIPT_PATH="$(dirname "$(readlink -f "$0")")"
@@ -93,7 +93,7 @@ if [[ "$SETUP_CRON" = true ]]; then
     fi
 fi
 
-# Envoie la sauvegarde au premier poste distant
+# Send the save to the first remote server/computer
 scp -i "$SSH_KEY_PATH" $BACKUP_PATH $REMOTE_USER@$REMOTE_HOST:$REMOTE_PATH
 if [[ $? -ne 0 ]]; then
     echo "Erreur lors de l'envoi de la sauvegarde au serveur distant."
@@ -101,19 +101,19 @@ if [[ $? -ne 0 ]]; then
 fi
 
 if [[ "$DELETE_RECENT" = true ]]; then
-  # Supprime les archives plus anciennes sur le serveur distant
+  # Delete the oldest archives on the remote server
   ssh -i "$SSH_KEY_PATH" $REMOTE_USER@$REMOTE_HOST <<
   EOF
     cd $REMOTE_PATH
 
-    # Obtiens le timestamp du fichier le plus récemment modifié
+    # Get the timestamp of the most recently updated/uploaded folder
     newest_timestamp=$(stat --format=%Y -- "$(ls -t | head -n 1)")
 
-    # Parcourt chaque fichier/dossier pour vérifier son timestamp
+    # Scans each file/folder to check its timestamp
     for file in *; do
       file_timestamp=$(stat --format=%Y -- "$file")
 
-      # Si le fichier/dossier est plus ancien que le plus récent, le supprime
+      # If the file/folder is older than the most recent, delete it.
       if [[ $file_timestamp -lt $newest_timestamp ]]; then
         rm -r "$file"
       fi
@@ -123,5 +123,5 @@ fi
 
 echo "Sauvegarde réussie et envoyée au serveur distant."
 
-# Redirige la sortie standard et la sortie d'erreur vers le fichier "output.log"
+# Redirects standard and error output to the "output.log" file
 ) |& tee output.log
