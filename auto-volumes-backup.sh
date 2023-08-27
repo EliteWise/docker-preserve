@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 (
 
-dependencies=("tar" "scp" "ssh" "docker")
+dependencies=("tar" "scp" "ssh" "docker" "gawk")
 # Verify the existence of dependencies
 for cmd in "${dependencies[@]}"; do
   if ! command -v $cmd &> /dev/null; then
@@ -73,10 +73,25 @@ if [[ "$SAVE_NAMED_VOLUMES" = true ]]; then
 fi
 
 # Creation of an archive of the folder "volumes"
-sudo tar czvf $BACKUP_PATH -C $VOLUME_PATH ./
+sudo tar czvf "$BACKUP_PATH" -C "$VOLUME_PATH" ./
 if [[ $? -ne 0 ]]; then
     echo "Erreur lors de la création de l'archive."
     exit 1
+else
+    if [[ "$DELETE_RECENT" = true ]]; then
+      PREVIOUS_ARCHIVE=$(ls -lt "$BACKUP_PATH"/*.tar.gz | head -n 2 | tail -n 1 | awk '{print $NF}')
+
+      if [[ -n "$PREVIOUS_ARCHIVE" && -f "$PREVIOUS_ARCHIVE" ]]; then
+        rm "$PREVIOUS_ARCHIVE"
+        if [[ $? -eq 0 ]]; then
+          echo "Suppression de la dernière archive effectuée."
+        else
+          echo "Erreur lors de la suppression de l'archive."
+        fi
+      else
+        echo "L'archive précédente n'a pas été trouvée ou n'est pas un fichier régulier."
+      fi
+    fi
 fi
 
 # Verify if the SSH key as the right permissions
