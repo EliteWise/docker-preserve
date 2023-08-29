@@ -20,10 +20,13 @@ else
         echo "Usage: $0 [config] OR $0 [REMOTE_USER] [REMOTE_HOST] [REMOTE_PATH]"
         exit 1
     else
+      if [[ ! "$1" =~  "-" ]]; then
         # Configuration
         REMOTE_USER="$1"
         REMOTE_HOST="$2"
         REMOTE_PATH="$3"
+      else
+        FLAG_PASSED=true
 
         BACKUP_FOLDER="./backups"
         VOLUME_PATH="./volumes"
@@ -46,7 +49,45 @@ else
               break
           fi
         done
+      fi
     fi
+fi
+
+if [[ "$FLAG_PASSED" = true ]]; then
+  while getopts ":u:r:p:" opt; do
+    case ${opt} in
+      u)
+        REMOTE_USER="$OPTARG"
+        ;;
+      r)
+        REMOTE_HOST="$OPTARG"
+        ;;
+      p)
+        REMOTE_PATH="$OPTARG"
+        ;;
+      h)
+        echo "Usage:"
+        echo "  $0 config"
+        echo "  $0 REMOTE_USER REMOTE_HOST REMOTE_PATH [--named-volumes]"
+        echo "  $0 -u REMOTE_USER -r REMOTE_HOST -p REMOTE_PATH [--named-volumes]"
+        echo ""
+        echo "Options:"
+        echo "  config            Use the configuration file to execute the script."
+        echo "  REMOTE_USER       Username to use for the remote connection."
+        echo "  REMOTE_HOST       IP address or hostname of the remote server."
+        echo "  REMOTE_PATH       Path on the remote server where operations will be performed."
+        echo "  --named-volumes   Use named volumes for persistent storage with docker (optional)."
+        exit 1
+      \?)
+        echo "Option invalide: -$OPTARG" 1>&2
+        exit 1
+        ;;
+      :)
+        echo "L'option -$OPTARG requiet un argument." 1>&2
+        exit 1
+        ;;
+    esac
+  done
 fi
 
 # Verify if the folder backups exist, else create it
