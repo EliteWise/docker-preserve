@@ -4,7 +4,7 @@ VOLUME_PATH="./volumes"
 VOLUME_NAME="volumes"
 REMOTE_PATH="/home/ubuntu/backups"
 
-BACKUP_FILE="backup_$(date +"%Y%m%d%H%M%S").tar.gz"
+BACKUP_FILE="backup_$(date +"%Y%m%d%H%M%S").tar"
 BACKUP_PATH="$BACKUP_FOLDER/$BACKUP_FILE"
 
 # Configurations for the remote connection
@@ -25,3 +25,6 @@ SAVE_NAMED_VOLUMES=false
 
 # Delete the most recent archive on the remote and parent server
 DELETE_RECENT=false
+
+# List of programs supported: gzip | xz | bzip2
+COMPRESSION_PROGRAM="gzip"

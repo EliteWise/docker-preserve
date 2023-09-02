@@ -36,4 +36,6 @@ send_notification() {
                }
            ]
        }"
+
+    return 0
 }

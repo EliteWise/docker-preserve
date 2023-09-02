@@ -78,6 +78,7 @@ if [[ "$FLAG_PASSED" = true ]]; then
         echo "  REMOTE_PATH       Path on the remote server where operations will be performed."
         echo "  --named-volumes   Use named volumes for persistent storage with docker (optional)."
         exit 1
+        ;;
       \?)
         echo "Option invalide: -$OPTARG" 1>&2
         exit 1
@@ -114,7 +115,21 @@ if [[ "$SAVE_NAMED_VOLUMES" = true ]]; then
 fi
 
 # Creation of an archive of the folder "volumes"
-sudo tar czvf "$BACKUP_PATH" -C "$VOLUME_PATH" ./
+case "$COMPRESSED_PROGRAM" in 
+  gzip)
+    # z to use gzip compression
+    sudo tar czvf "$BACKUP_PATH.gz" -C "$VOLUME_PATH" ./
+  ;;
+  xz)
+    # J to use xz compression
+    sudo tar cJvf "$BACKUP_PATH.xz" -C "$VOLUME_PATH" ./
+  ;;
+  bzip2)
+    # j to use bzip2 compression
+    sudo tar cjvf "$BACKUP_PATH.bz2" -C "$VOLUME_PATH" ./
+  ;;
+esac
+
 if [[ $? -ne 0 ]]; then
     echo "Erreur lors de la création de l'archive."
     exit 1
@@ -154,6 +169,14 @@ scp -i "$SSH_KEY_PATH" $BACKUP_PATH $REMOTE_USER@$REMOTE_HOST:$REMOTE_PATH
 if [[ $? -ne 0 ]]; then
     echo "Erreur lors de l'envoi de la sauvegarde au serveur distant."
     exit 1
+fi
+
+source notifications-sender.sh
+
+send_notification "dest@gmail.com" "exp@gmail.com" "Subject" "Message"
+if [[ $? -ne 0 ]]; then
+  echo "Erreur lors de l'envoi du mail."
+  exit 1
 fi
 
 if [[ "$DELETE_RECENT" = true ]]; then
