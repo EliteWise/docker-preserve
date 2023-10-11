@@ -10,6 +10,7 @@ BACKUP_PATH="$BACKUP_FOLDER/$BACKUP_FILE"
 # Configurations for the remote connection
 REMOTE_USER="root"
 REMOTE_HOST="example.com"
+REMOTE_PORT="22"
 
 # SSH key configuration (if necessary)
 SSH_KEY_PATH="$HOME/.ssh/id_rsa_backups"
