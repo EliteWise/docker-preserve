@@ -177,7 +177,8 @@ if [[ "$SETUP_CRON" = true ]]; then
 fi
 
 # Send the save to the first remote server/computer
-scp -i "$SSH_KEY_PATH" -P $REMOTE_PORT "${BACKUP_PATH}.*" $REMOTE_USER@$REMOTE_HOST:$REMOTE_PATH
+BASENAME_BACKUP=$(basename "$BACKUP_PATH")
+find ./backups -name "${BASENAME_BACKUP}.*" -print0 | xargs -0 -I {} scp -i "$SSH_KEY_PATH" -P $REMOTE_PORT {} $REMOTE_USER@$REMOTE_HOST:$REMOTE_PATH
 if [[ $? -ne 0 ]]; then
     echo "Erreur lors de l'envoi de la sauvegarde au serveur distant."
     exit 1
