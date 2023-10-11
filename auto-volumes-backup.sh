@@ -115,7 +115,7 @@ if [[ "$SAVE_NAMED_VOLUMES" = true ]]; then
 fi
 
 # Creation of an archive of the folder "volumes"
-case "$COMPRESSED_PROGRAM" in 
+case "$COMPRESSION_PROGRAM" in 
   gzip)
     # z to use gzip compression
     sudo tar czvf "$BACKUP_PATH.gz" -C "$VOLUME_PATH" ./

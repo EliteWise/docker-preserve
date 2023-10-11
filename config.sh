@@ -12,7 +12,7 @@ REMOTE_USER="root"
 REMOTE_HOST="example.com"
 
 # SSH key configuration (if necessary)
-SSH_KEY_PATH="~/.ssh/id_rsa_backups"
+SSH_KEY_PATH="$HOME/.ssh/id_rsa_backups"
 
 # Cron Configuration
 SETUP_CRON=false
