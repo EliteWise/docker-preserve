@@ -2,7 +2,7 @@
 BACKUP_FOLDER="./backups"
 VOLUME_PATH="./volumes"
 VOLUME_NAME="volumes"
-REMOTE_PATH="/home/ubuntu/backups"
+REMOTE_PATH="/home/elite/backups"
 
 BACKUP_FILE="backup_$(date +"%Y%m%d%H%M%S").tar"
 BACKUP_PATH="$BACKUP_FOLDER/$BACKUP_FILE"
@@ -12,7 +12,7 @@ REMOTE_USER="root"
 REMOTE_HOST="example.com"
 
 # SSH key configuration (if necessary)
-SSH_KEY_PATH="/root/.ssh/backup-ssh"
+SSH_KEY_PATH="~/.ssh/id_rsa_backups"
 
 # Cron Configuration
 SETUP_CRON=false
@@ -26,5 +26,5 @@ SAVE_NAMED_VOLUMES=false
 # Delete the most recent archive on the remote and parent server
 DELETE_RECENT=false
 
-# List of programs supported: gzip | xz | bzip2
-COMPRESSION_PROGRAM="gzip"
+# List of programs supported: gzip | xz | bzip2 | 7zip
+COMPRESSION_PROGRAM="7zip"

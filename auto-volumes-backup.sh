@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 (
 
-dependencies=("tar" "scp" "ssh" "docker" "gawk")
+dependencies=("tar" "scp" "ssh" "docker")
 # Verify the existence of dependencies
 for cmd in "${dependencies[@]}"; do
   if ! command -v $cmd &> /dev/null; then
@@ -128,6 +128,9 @@ case "$COMPRESSED_PROGRAM" in
     # j to use bzip2 compression
     sudo tar cjvf "$BACKUP_PATH.bz2" -C "$VOLUME_PATH" ./
   ;;
+  7zip)
+    sudo 7z a -t7z "$BACKUP_PATH.7z" "$VOLUME_PATH" ./
+  ;;
 esac
 
 if [[ $? -ne 0 ]]; then
@@ -150,13 +153,22 @@ else
     fi
 fi
 
-# Verify if the SSH key as the right permissions
-chmod 600 "$SSH_KEY_PATH"
+if ! [ -f $SSH_KEY_PATH ]; then
+  ssh-keygen -t rsa -b 4096 -f "$SSH_KEY_PATH"
 
-SCRIPT_PATH="$(dirname "$(readlink -f "$0")")"
+  # Verify if the SSH key as the right permissions
+  chmod 600 "$SSH_KEY_PATH"
+
+  # Copy the public key to the remote server
+  ssh-copy-id -i "$SSH_KEY_PATH".pub $REMOTE_USER@$REMOTE_HOST
+
+  # Modify the remote server's SSH configuration to disable password authentication
+  ssh -i "$SSH_KEY_PATH" $REMOTE_USER@$REMOTE_HOST "sudo sed -i 's/^#PasswordAuthentication yes$/PasswordAuthentication no/' /etc/ssh/sshd_config && sudo systemctl restart sshd"
+fi
 
 if [[ "$SETUP_CRON" = true ]]; then
-    if ! crontab -l | grep -q "path_to_your_script"; then
+    SCRIPT_PATH="$(dirname "$(readlink -f "$0")")"
+    if ! crontab -l | grep -q $SCRIPT_PATH; then
         (crontab -l ; echo "$CRON_SCHEDULE /bin/bash $SCRIPT_PATH/$(basename "$0")") | crontab -
         echo "Cron job configuré pour s'exécuter selon : $CRON_SCHEDULE"
     else
@@ -173,7 +185,7 @@ fi
 
 source notifications-sender.sh
 
-send_notification "dest@gmail.com" "exp@gmail.com" "Subject" "Message"
+send_notification "florent.mogenet@gmail.com" "exp@gmail.com" "Subject" "Message"
 if [[ $? -ne 0 ]]; then
   echo "Erreur lors de l'envoi du mail."
   exit 1
@@ -181,23 +193,22 @@ fi
 
 if [[ "$DELETE_RECENT" = true ]]; then
   # Delete the oldest archives on the remote server
-  ssh -i "$SSH_KEY_PATH" $REMOTE_USER@$REMOTE_HOST <<
-  EOF
-    cd $REMOTE_PATH
+  ssh -i "$SSH_KEY_PATH" $REMOTE_USER@$REMOTE_HOST <<EOF
+  cd $REMOTE_PATH
 
-    # Get the timestamp of the most recently updated/uploaded folder
-    newest_timestamp=$(stat --format=%Y -- "$(ls -t | head -n 1)")
+  # Get the timestamp of the most recently updated/uploaded folder
+  newest_timestamp=$(stat --format=%Y -- "$(ls -t | head -n 1)")
 
-    # Scans each file/folder to check its timestamp
-    for file in *; do
-      file_timestamp=$(stat --format=%Y -- "$file")
+  # Scans each file/folder to check its timestamp
+  for file in *; do
+    file_timestamp=$(stat --format=%Y -- "$file")
 
-      # If the file/folder is older than the most recent, delete it.
-      if [[ $file_timestamp -lt $newest_timestamp ]]; then
-        rm -r "$file"
-      fi
-    done
-  EOF
+    # If the file/folder is older than the most recent, delete it.
+    if [[ $file_timestamp -lt $newest_timestamp ]]; then
+      rm -r "$file"
+    fi
+  done
+EOF
 fi
 
 echo "Sauvegarde réussie et envoyée au serveur distant."
