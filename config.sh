@@ -2,7 +2,7 @@
 BACKUP_FOLDER="./backups"
 VOLUME_PATH="./volumes"
 VOLUME_NAME="volumes"
-REMOTE_PATH="/home/elite/backups"
+REMOTE_PATH="/home/ubuntu/backups"
 
 BACKUP_FILE="backup_$(date +"%Y%m%d%H%M%S").tar"
 BACKUP_PATH="$BACKUP_FOLDER/$BACKUP_FILE"
@@ -28,4 +28,4 @@ SAVE_NAMED_VOLUMES=false
 DELETE_RECENT=false
 
 # List of programs supported: gzip | xz | bzip2 | 7zip
-COMPRESSION_PROGRAM="7zip"
+COMPRESSION_PROGRAM="gzip"
