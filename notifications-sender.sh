@@ -5,12 +5,12 @@ if [ -z "$SENDGRID_API_KEY" ]; then
     exit 1
 fi
 
-send_notification() {
-  local recipient_email="$1"
-  local sender_email="$2"
-  local subject="$3"
-  local message="$4"
+recipient_email="$1"
+sender_email="$2"
+subject="$3"
+message="$4"
 
+send_notification() {
   curl --request POST \
        --url https://api.sendgrid.com/v3/mail/send \
        --header "Authorization: Bearer $SENDGRID_API_KEY" \
