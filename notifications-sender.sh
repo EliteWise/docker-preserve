@@ -36,6 +36,6 @@ send_notification() {
                }
            ]
        }"
-
-    return 0
 }
+
+send_notification "$recipient_email" "$sender_email" "$subject" "$message"
